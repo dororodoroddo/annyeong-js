@@ -1,7 +1,7 @@
 {
     "include": [
-        "src/index.ts",
-        "src/test/index.ts"
+        "src/component/index.ts",
+        "src/store/index.ts",
     ],
     "exclude": [
         "node_modules",
@@ -10,7 +10,7 @@
     "compilerOptions": {
         "module": "es2015",
         "moduleResolution":"Node",
-        "target": "es6",
+        "target": "ES2016",
         "rootDir": "src/",
         "declaration": true,
         "outDir": "dist/",

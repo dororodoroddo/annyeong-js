@@ -1,4 +1,4 @@
-# annyeong-js *미완성*
+# annyeong-js *신버전*
 ## Introduction
 학습용 javascript/typescript로 작성된 SPA 라이브러리
 
@@ -7,9 +7,9 @@
 * .fullSize(), .flexRow() 와 같이 이터러블 프로토콜과 같은 형식으로 스타일을 지정할 수 있다.
 * frame단위 렌더링을 통한 최적화 및 활용
 
-미완성 제작중
+### TODO:
+* 1.0 나오기 전까진 커밋 기록 유지 후 rebase 하기
 
-## TODO: 
-프로토타입 완성시 commit rebase
-
-완성부터 시키고 로직 최적화하기
+## 기록
+* 22/11/19 - 신 구조로 개편(구버전은 구버전 브랜치로 이동)
+* 22/10/10 - 프로젝트 시작
