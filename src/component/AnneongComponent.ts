@@ -1,11 +1,12 @@
 // import Store from '../store/index';
-import { AnyObject } from '../types';
+import { AnyObject, Key } from '../types';
 
 
-export type AnnyeongParameters<ElementType extends HTMLElement> = {
+export interface AnnyeongParameters {
   htmlType: string;
   state: AnyObject;
   renderFuntion: ()=>string|AnnyeongComponent<HTMLElement>[];
+  mounted?: (this: this['state']) => void;
 }
 
 /**
@@ -14,12 +15,15 @@ export type AnnyeongParameters<ElementType extends HTMLElement> = {
 export default class AnnyeongComponent<ElementType extends HTMLElement> {
   public rootEl!: ElementType;
   private render!: () => void;
-  constructor({ htmlType, state, renderFuntion }: AnnyeongParameters<ElementType>) {
+  private isRender = false;
+  private renderState: Set<Key> = new Set();
+  private isSync = false;
+
+  constructor({ htmlType, state, renderFuntion, mounted }: AnnyeongParameters) {
     this.rootEl = document.createElement(htmlType) as ElementType;
-    let isRender = false;
-    const isSync = false;
+
     this.render = () => {
-      isRender = true;
+      this.isRender = true;
       const childs = renderFuntion.call(state);
       if (typeof childs === 'string') {
         this.rootEl.innerHTML = childs;
@@ -29,26 +33,27 @@ export default class AnnyeongComponent<ElementType extends HTMLElement> {
           this.rootEl.appendChild(child);
         }
       }
-      isRender = false;
+      this.isRender = false;
     };
-    const renderState: Array<string|symbol> = [];
+
     state = new Proxy(state, {
       get: (target, key, reciever) => {
-        if(isRender) {
-          renderState.push(key);
+        if(this.isRender) {
+          this.renderState.add(key);
         }
         return Reflect.get(target, key, reciever);
       },
       set: (target, key, value, reciever) => {
-        if ((typeof key === 'string') && /^global__/.test(key) && !isSync) {
+        if ((typeof key === 'string') && /^global__/.test(key) && !this.isSync) {
           throw new Error('cannot set on global state');
         }
-        if (target[key] !== value && renderState.includes(key)) {
+        if (target[key] !== value && this.renderState.has(key)) {
           setTimeout(this.render);
         }
         return Reflect.set(target, key, value, reciever);
       },
     });
+
     for (const key in state) {
       if (/^global__/.test(key)) {
         // const stateKey = key.split('global__')[1];
@@ -64,5 +69,7 @@ export default class AnnyeongComponent<ElementType extends HTMLElement> {
     }
   
     this.render();
+
+    mounted.call(state);
   }
 }

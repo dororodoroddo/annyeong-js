@@ -2,6 +2,7 @@
     "include": [
         "src/component/index.ts",
         "src/store/index.ts",
+        "src/test/index.ts",
     ],
     "exclude": [
         "node_modules",
