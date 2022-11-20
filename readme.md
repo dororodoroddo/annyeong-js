@@ -1,6 +1,6 @@
 # annyeong-js
 ## Introduction
-학습용 javascript/typescript로 작성된 SPA 라이브러리
+Reactive SPA Framework for learning proxy and typescript
 
 ### TODO (구조 계획)
 * 상태변화 -> state 싱크 프로세스 -> getter 싱크 프로세스 -> 렌더 프로세스 순서를 유지하며 nextTick을 호출할 수 있는 구조 생성
@@ -20,7 +20,6 @@
 
 ### 특징
 * dom element의 속성값과 상태의 변화를 this와 반응형으로 연결하여 사용하기 편합니다.
-* .fullSize(), .flexRow() 와 같이 이터러블 프로토콜과 같은 형식으로 스타일을 지정할 수 있다.
 * frame단위 렌더링을 통한 최적화 및 활용
 
 
