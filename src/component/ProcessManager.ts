@@ -1,7 +1,5 @@
-import { AnyFunction } from '../types/index';
-
 /**
- * 
+ * wip
  */
 export default class AnnyeongProcessManager {
   // 스테이트는 큐 없이 즉시 호춣하면 되므로 삭제 예정

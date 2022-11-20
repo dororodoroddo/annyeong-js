@@ -10,7 +10,7 @@ export interface AnnyeongParameters {
 }
 
 /**
- * 
+ * main component
  */
 export default class AnnyeongComponent<ElementType extends HTMLElement> {
   public rootEl!: ElementType;

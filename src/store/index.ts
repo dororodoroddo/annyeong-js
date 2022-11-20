@@ -24,7 +24,7 @@ export default class store<State extends AnyObject> {
       },
       set: (target, key, value, reciever) => {
         if (target[key] !== value) {
-          // this.getterGetStates[key].forEach()
+          // this.getterGetStates[key].forEach() // wip
           this.stateSetMethods[key].forEach((methods: any) => {
             methods(value);
           });
