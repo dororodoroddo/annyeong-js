@@ -1,5 +1,5 @@
+import { InitialState } from '../../../store';
 import TestState from './types';
-import { InitialState } from '../../../types/index';
 
 const testInitialState: InitialState<TestState> = () => {
   return {

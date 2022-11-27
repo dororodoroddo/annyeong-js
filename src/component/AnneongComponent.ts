@@ -1,12 +1,17 @@
-// import Store from '../store/index';
-import { AnyObject, Key } from '../types';
+import { AnyObject } from '../types';
+import Store from '../store/index';
+import annyeongProcessManager from './ProcessManager';
+import { Attribute } from '../types/index';
 
-
-export interface AnnyeongParameters {
+export interface AnnyeongParameters<ElementType extends HTMLElement> {
   htmlType: string;
   state: AnyObject;
-  renderFuntion: ()=>string|AnnyeongComponent<HTMLElement>[];
+  store?: Store<AnyObject>;
+  // 컴포넌트는 html 반환하는 컴포넌트 이거나 컨포넌트를 반환하는 컴포넌트이고, 어느 하나를 선택적으로 반환할 수는 없다.
+  renderFuntion:(() => string)|(() => AnnyeongComponent<HTMLElement>[]);
   mounted?: (this: this['state']) => void;
+  attributes?: Attribute<ElementType>;
+  key?: string;
 }
 
 /**
@@ -16,11 +21,30 @@ export default class AnnyeongComponent<ElementType extends HTMLElement> {
   public rootEl!: ElementType;
   private render!: () => void;
   private isRender = false;
-  private renderState: Set<Key> = new Set();
+  private renderState: Set<PropertyKey> = new Set();
   private isSync = false;
+  
+  // 전역에서 유일하면서 같은 파라미터라면 동일해야함
+  private key!: string;
 
-  constructor({ htmlType, state, renderFuntion, mounted }: AnnyeongParameters) {
+  constructor({ htmlType, state, renderFuntion, mounted, store, key, attributes }: AnnyeongParameters<ElementType>) {
+    this.key = annyeongProcessManager.getKey(key);
     this.rootEl = document.createElement(htmlType) as ElementType;
+    for (const attributeKey in attributes) {
+      const attribute = attributes[attributeKey];
+      if (attribute) {
+        if (typeof attribute === 'object') {
+          for (const subAttributeKey in attribute) {
+            const subAttribute = attribute[subAttributeKey];
+            if (subAttribute) {
+              this.rootEl[attributeKey][subAttributeKey] = subAttribute;
+            }
+          }
+        } else {
+          this.rootEl[attributeKey] = attribute;
+        }
+      }
+    }
 
     this.render = () => {
       this.isRender = true;
@@ -48,28 +72,30 @@ export default class AnnyeongComponent<ElementType extends HTMLElement> {
           throw new Error('cannot set on global state');
         }
         if (target[key] !== value && this.renderState.has(key)) {
-          setTimeout(this.render);
+          annyeongProcessManager.pushRenderQueue(this.key, this.render);
         }
         return Reflect.set(target, key, value, reciever);
       },
     });
 
-    for (const key in state) {
-      if (/^global__/.test(key)) {
-        // const stateKey = key.split('global__')[1];
-        // Store.stateSetMethods[stateKey].push((value: any)=>{
-        //   isSync = true;
-        //   state[key] = value;
-        //   isSync = false;
-        // });
-        // isSync = true;
-        // state[key] = Store.state[stateKey];
-        // isSync = false;
+    if (store) {
+      for (const key in state) {
+        if (/^global__/.test(key)) {
+          const stateKey = key.slice(8);
+          store.stateSetMethods[stateKey].push((value: any)=>{
+            this.isSync = true;
+            state[key] = value;
+            this.isSync = false;
+          });
+          this.isSync = true;
+          state[key] = store.state[stateKey];
+          this.isSync = false;
+        }
       }
     }
   
     this.render();
 
-    mounted.call(state);
+    mounted?.call(state);
   }
 }

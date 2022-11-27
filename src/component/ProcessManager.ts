@@ -1,8 +1,7 @@
 /**
  * wip
  */
-export default class AnnyeongProcessManager {
-  // 스테이트는 큐 없이 즉시 호춣하면 되므로 삭제 예정
+class AnnyeongProcessManager {
   private stateSyncProcessQueue = new Set();
 
   private getterSyncProcessQueue = new Set();
@@ -11,10 +10,21 @@ export default class AnnyeongProcessManager {
     //
   }
 
-  public pushGetterSyncQueue(targetGetter: ()=>any) {
+  public pushGetterSyncQueue(key: string, targetGetter: ()=>any) {
     this.getterSyncProcessQueue.add(targetGetter);
   }
-  public pushRenderQueue(targetRender: ()=>void) {
+  public pushRenderQueue(key: string, targetRender: ()=>void) {
     this.renderProcessQueue.add(targetRender);
   }
+
+  public getKey(key?: string) {
+    if (key) {
+      //  
+    }
+
+    return '';
+  }
 }
+
+const annyeongProcessManager = new AnnyeongProcessManager();
+export default annyeongProcessManager;

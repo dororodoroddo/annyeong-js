@@ -1,4 +1,4 @@
-import { Mutations } from '../../../types';
+import { Mutations } from '../../../store';
 import TestState from './types';
 
 const testMutations: Mutations<TestState> = {
