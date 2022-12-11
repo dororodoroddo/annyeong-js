@@ -1,17 +1,13 @@
-import AnnyeongComponent from '../../../component/AnneongComponent';
+import AnnyeongComponent from '../../../component/AnnyeongComponent';
 import CommonButton from './CommonButton';
 
 const CommonComponent = () => {
-
-
-
-
   return new AnnyeongComponent<HTMLDivElement>({
     htmlType: 'div',
     state: {
       test: 123,
     },
-    renderFuntion() {
+    appendChilds() {
       return [
         CommonButton()
       ];

@@ -1,6 +1,6 @@
 import { AnyObject } from '../types';
 import Store from '../store/index';
-import annyeongProcessManager from './ProcessManager';
+import annyeongProcessManager from './ComponentProcessManager';
 import { Attribute } from '../types/index';
 
 export interface AnnyeongParameters<ElementType extends HTMLElement> {
@@ -8,7 +8,7 @@ export interface AnnyeongParameters<ElementType extends HTMLElement> {
   state: AnyObject;
   store?: Store<AnyObject>;
   // 컴포넌트는 html 반환하는 컴포넌트 이거나 컨포넌트를 반환하는 컴포넌트이고, 어느 하나를 선택적으로 반환할 수는 없다.
-  renderFuntion:(() => string)|(() => AnnyeongComponent<HTMLElement>[]);
+  appendChilds:(() => AnnyeongComponent<HTMLElement>[]);
   mounted?: (this: this['state']) => void;
   attributes?: Attribute<ElementType>;
   key?: string;
@@ -27,7 +27,7 @@ export default class AnnyeongComponent<ElementType extends HTMLElement> {
   // 전역에서 유일하면서 같은 파라미터라면 동일해야함
   private key!: string;
 
-  constructor({ htmlType, state, renderFuntion, mounted, store, key, attributes }: AnnyeongParameters<ElementType>) {
+  constructor({ htmlType, state, appendChilds, mounted, key, attributes }: AnnyeongParameters<ElementType>) {
     this.key = annyeongProcessManager.getKey(key);
     this.rootEl = document.createElement(htmlType) as ElementType;
     for (const attributeKey in attributes) {
@@ -48,13 +48,12 @@ export default class AnnyeongComponent<ElementType extends HTMLElement> {
 
     this.render = () => {
       this.isRender = true;
-      const childs = renderFuntion.call(state);
+      const childs = renderFuntion.call(state) as string | AnnyeongComponent<HTMLElement>[];
       if (typeof childs === 'string') {
         this.rootEl.innerHTML = childs;
-      }
-      if (typeof childs === 'object') {
+      } else {
         for (const child of childs) {
-          this.rootEl.appendChild(child);
+          this.rootEl.appendChild(child.rootEl);
         }
       }
       this.isRender = false;
@@ -78,24 +77,12 @@ export default class AnnyeongComponent<ElementType extends HTMLElement> {
       },
     });
 
-    if (store) {
-      for (const key in state) {
-        if (/^global__/.test(key)) {
-          const stateKey = key.slice(8);
-          store.stateSetMethods[stateKey].push((value: any)=>{
-            this.isSync = true;
-            state[key] = value;
-            this.isSync = false;
-          });
-          this.isSync = true;
-          state[key] = store.state[stateKey];
-          this.isSync = false;
-        }
-      }
-    }
-  
     this.render();
 
     mounted?.call(state);
+  }
+
+  public paramsChanged(params: AnnyeongParameters<ElementType>) {
+    console.log(params);
   }
 }
