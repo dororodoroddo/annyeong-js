@@ -2,7 +2,7 @@
 ## Introduction
 Reactive SPA Framework for learning proxy and typescript
 
-### 특징
+## 특징
 * 코드에서 MVVM 패턴의 구분에서의 차별화
   * VIEW(컴포넌트) <-> VIEW MODEL(어트리뷰트 단위) <-> MODEL(상태관리)
   * 컴포넌트 작성 단계에서는 reactive가 없는 DOM 트리 나열에 집중
@@ -28,12 +28,7 @@ Reactive SPA Framework for learning proxy and typescript
 * 돔트리 구조를 구현하는 함수는 마운트 시에만 동작
   * 리스트 형태로 돔트리가 가변적일 떄는 키를 통해 구분하여 이니셜과 리무브만 실행
 * 라우터
-  
 * 1.0 나오기 전까진 커밋 기록 유지 후 rebase 하기
-
-### 특징
-* dom element의 속성값과 상태의 변화를 this와 반응형으로 연결하여 사용하기 편합니다.
-* frame단위 렌더링을 통한 최적화 및 활용
 
 
 ## 기록
