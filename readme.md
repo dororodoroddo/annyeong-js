@@ -3,8 +3,7 @@
 Reactive SPA Framework for learning proxy and typescript
 
 ## 특징
-
-
+* ㅠㅠ
 
 ### TODO (구조 계획)
 * 상태관리와 컴포넌트 분리
